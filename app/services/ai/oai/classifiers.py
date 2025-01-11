@@ -5,7 +5,7 @@ from services.ai.oai.client import client
 
 
 class Intent(BaseModel):
-    intent: Optional[Literal["link-account"]]
+    intent: Optional[Literal["link-account", "unlink-account"]]
     error: Optional[str]
 
 
