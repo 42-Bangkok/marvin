@@ -1,2 +1,2 @@
 # marvin
-Discord utility bot
+Discord utility bot for 42 Bangkok
