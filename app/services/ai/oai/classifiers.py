@@ -1,26 +1,35 @@
 from typing import Literal, Optional
+
 from pydantic import BaseModel
 from services.ai.oai.client import client
 
 
 class Intent(BaseModel):
     intent: Optional[Literal["sync-account"]]
+    error: Optional[str]
 
 
-def classify_intent(content: str) -> Intent:
+def classify_intent(
+    content: str,
+    model: str = "gpt-4o-mini",
+) -> Intent:
     """
     Classify the intent of the user's message.
+    Args:
+        content (str): The message to classify.
+        model (str): The model to use for classification.
     """
 
-    PROMPT = """
-    Given the following message, classify the intent of the user's message.
-    sync-account: The user wants to sync their account with another service.
-    If the intent is not clear, return None.
+    SYSTEM_PROMPT = """
+    Classify the intent of the user's message.
+    Avaliable intents:
+    - sync-account: The user wants to sync their account with another service.
     """
+
     completion = client.beta.chat.completions.parse(
-        model="gpt-4o-2024-08-06",
+        model=model,
         messages=[
-            {"role": "system", "content": PROMPT},
+            {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": content},
         ],
         response_format=Intent,
