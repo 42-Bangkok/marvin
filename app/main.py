@@ -7,6 +7,7 @@ from discord.message import Message
 from rich import inspect
 from services.account.links import handle_link_account
 from services.ai.oai.classifiers import classify_intent
+from services.chat.utils import should_ignore_message
 from settings import SETTINGS
 
 intents = Intents.default()
@@ -24,27 +25,10 @@ async def on_ready():
     logging.info(f"Logged in as {bot.user.name}")
 
 
-def _should_ignore_message(message: Message) -> bool:
-    # Ignore DMs
-    if message.guild is None:
-        return True
-    # Ignore other guilds
-    if message.guild and message.guild.id != SETTINGS.DISCORD_GUILD_ID:
-        return True
-    # Ignore messages from the self
-    if message.author == bot.user:
-        return True
-    # Ignore messages that don't mention the bot
-    if "@Marvin" not in message.clean_content:
-        return True
-
-    return False
-
-
 @bot.event
 async def on_message(message: Message):
     inspect(message)
-    if _should_ignore_message(message):
+    if should_ignore_message(message):
         return
 
     async with message.channel.typing():
