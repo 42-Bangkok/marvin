@@ -59,7 +59,7 @@ async def on_message(message: Message):
         link = await handle_link_account(message.author.id)
         tasks = [
             message.reply(
-                "I'm going to send you a DM with instructions on how to sync your account."
+                "I'm going to send you a DM with instructions on how to link your account."
             ),
             message.author.send(f"1. proceed to this link: {link.url}"),
         ]
