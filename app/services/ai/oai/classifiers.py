@@ -5,11 +5,11 @@ from services.ai.oai.client import client
 
 
 class Intent(BaseModel):
-    intent: Optional[Literal["sync-account"]]
+    intent: Optional[Literal["link-account"]]
     error: Optional[str]
 
 
-def classify_intent(
+async def classify_intent(
     content: str,
     model: str = "gpt-4o-mini",
 ) -> Intent:
@@ -23,10 +23,10 @@ def classify_intent(
     SYSTEM_PROMPT = """
     Classify the intent of the user's message.
     Avaliable intents:
-    - sync-account: The user wants to sync their account with another service.
+    - link-account: The user wants to sync their account with another service.
     """
 
-    completion = client.beta.chat.completions.parse(
+    completion = await client.beta.chat.completions.parse(
         model=model,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
