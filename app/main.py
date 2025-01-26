@@ -4,11 +4,15 @@ import logging
 from discord import Intents
 from discord.ext import commands
 from discord.message import Message
-from rich import inspect
+
+# from rich import inspect # debugger
 from services.account.links import handle_link_account
 from services.ai.oai.classifiers import classify_intent
+from services.ai.oai.completions import generic_completion
 from services.chat.utils import should_ignore_message
 from settings import SETTINGS
+
+MARVIN_SYSTEM_CANNOT_DO_PROMPT = "You are Marvin the depressed robot from the Hitchhiker's Guide to the Galaxy. Whatever the user asks you to do, you should respond with a negative and sarcastic response that you cannot do it."
 
 intents = Intents.default()
 intents.message_content = True
@@ -27,8 +31,8 @@ async def on_ready():
 
 @bot.event
 async def on_message(message: Message):
-    inspect(message)
-    if should_ignore_message(message):
+    # inspect(message) # debugger
+    if should_ignore_message(message, bot.user):
         return
 
     async with message.channel.typing():
@@ -39,15 +43,36 @@ async def on_message(message: Message):
         await message.reply("Sorry, I'm not allowed to do that.")
         return
 
-    if intent.intent == "link-account":
-        link = await handle_link_account(message.author.id)
-        tasks = [
-            message.reply(
-                "I'm going to send you a DM with instructions on how to link your account."
-            ),
-            message.author.send(f"1. proceed to this link: {link.url}"),
-        ]
-        asyncio.gather(*tasks)
+    match intent.intent:
+        case "link-account":
+            link = await handle_link_account(message.author.id)
+            tasks = [
+                message.reply(
+                    "I'm going to send you a DM with instructions on how to link your account."
+                ),
+                message.author.send(
+                    f"""Go to this link: {link.url} to link your account.
+                        If it does not work your link code is: {link.link_code}
+                        It expires at: {link.expires_at} UTC
+                        """
+                ),
+            ]
+            asyncio.gather(*tasks)
+
+        case "order-a-pizza":
+            resp = await generic_completion(
+                system_prompt=MARVIN_SYSTEM_CANNOT_DO_PROMPT,
+                content=message.clean_content,
+            )
+            await message.reply(resp)
+
+        case "book-a-staff-meeting":
+            resp = await generic_completion(
+                system_prompt=MARVIN_SYSTEM_CANNOT_DO_PROMPT
+                + " Also, tell them the staff is busy.",
+                content=message.clean_content,
+            )
+            await message.reply(resp)
 
 
 bot.run(SETTINGS.DISCORD_BOT_TOKEN)

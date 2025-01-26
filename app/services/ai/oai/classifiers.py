@@ -5,7 +5,14 @@ from services.ai.oai.client import client
 
 
 class Intent(BaseModel):
-    intent: Optional[Literal["link-account", "unlink-account"]]
+    intent: Optional[
+        Literal[
+            "link-account",
+            "unlink-account",
+            "book-a-staff-meeting",
+            "order-a-pizza",
+        ]
+    ]
     error: Optional[str]
 
 
@@ -24,6 +31,9 @@ async def classify_intent(
     Classify the intent of the user's message.
     Avaliable intents:
     - link-account: The user wants to sync their account with another service.
+    - unlink-account: The user wants to remove the sync between their account and another service.
+    - book-a-staff-meeting: The user wants to schedule a meeting with staff.
+    - order-a-pizza: The user wants to order a pizza.
     """
 
     completion = await client.beta.chat.completions.parse(

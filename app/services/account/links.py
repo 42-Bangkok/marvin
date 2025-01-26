@@ -1,15 +1,19 @@
+from datetime import datetime
+
+import httpx
 import nanoid
 from pydantic import BaseModel
 from settings import SETTINGS
 
 
 class LinkAccountResponse(BaseModel):
-    token: str
+    link_code: str
+    expires_at: datetime
     url: str
 
 
 async def handle_link_account(
-    discord_user_id: int,
+    discord_id: int,
 ) -> LinkAccountResponse:
     """
     Handle the linking of an account.
@@ -17,9 +21,17 @@ async def handle_link_account(
         discord_user_id (int): The Discord user ID to link.
     """
     token = nanoid.generate()
-    # TODO: Save the token to the database along with the Discord user ID
+    client = httpx.AsyncClient(base_url=f"{SETTINGS.FE_URL}/api")
+    r = await client.post(
+        "/link/discord/generate-link-code",
+        json={"discord_id": discord_id},
+    )
+    r.raise_for_status()
+    data = r.json()
     return LinkAccountResponse(
-        token=token, url=f"{SETTINGS.FE_URL}/accounts/link/?token={token}"
+        link_code=data["link_code"],
+        expires_at=data["expires_at"],
+        url=f"{SETTINGS.FE_URL}/accounts/link/?token={token}",
     )
 
 
