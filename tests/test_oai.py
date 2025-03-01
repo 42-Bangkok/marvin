@@ -13,4 +13,4 @@ async def test_intent_classifier_none():
     content = "I want to order a pizza"
     intent = await classify_intent(content)
 
-    assert intent.intent is None
+    assert intent.error

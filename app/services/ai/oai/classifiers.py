@@ -10,7 +10,6 @@ class Intent(BaseModel):
             "link-account",
             "unlink-account",
             "book-a-staff-meeting",
-            "order-a-pizza",
         ]
     ]
     error: Optional[str]
@@ -18,7 +17,7 @@ class Intent(BaseModel):
 
 async def classify_intent(
     content: str,
-    model: str = "gpt-4o-mini",
+    model: str = "openai/gpt-4o-mini",
 ) -> Intent:
     """
     Classify the intent of the user's message.
@@ -33,7 +32,7 @@ async def classify_intent(
     - link-account: The user wants to sync their account with another service.
     - unlink-account: The user wants to remove the sync between their account and another service.
     - book-a-staff-meeting: The user wants to schedule a meeting with staff.
-    - order-a-pizza: The user wants to order a pizza.
+    If the user's message does not match any of these intents, return an error message.
     """
 
     completion = await client.beta.chat.completions.parse(
