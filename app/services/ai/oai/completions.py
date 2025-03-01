@@ -6,7 +6,7 @@ from services.ai.oai.client import client
 async def generic_completion(
     system_prompt: str,
     content: str,
-    max_tokens: int = 75,
+    max_tokens: int = 512,
     model: str = "gpt-4o-mini",
 ) -> str:
     """
