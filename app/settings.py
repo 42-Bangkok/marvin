@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     DISCORD_GUILD_ID: int
     DISCORD_BOT_TOKEN: str
     FE_URL: str
+    SERVICE_TOKEN: str
 
 
 SETTINGS = Settings()
