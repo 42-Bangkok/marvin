@@ -45,7 +45,7 @@ async def on_message(message: Message):
 
     match intent.intent:
         case "link-account":
-            link = await handle_link_account(message.author.id)
+            link = await handle_link_account(str(message.author.id))
             tasks = [
                 message.reply(
                     "I'm going to send you a DM with instructions on how to link your account."

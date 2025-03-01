@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import httpx
-import nanoid
 from pydantic import BaseModel, validate_call
 from settings import SETTINGS
 
@@ -21,7 +20,6 @@ async def handle_link_account(
     Args:
         discord_user_id (int): The Discord user ID to link.
     """
-    token = nanoid.generate()
     client = httpx.AsyncClient(base_url=f"{SETTINGS.FE_URL}/api")
     r = await client.post(
         "/link/discord/generate-link-code",
@@ -33,7 +31,7 @@ async def handle_link_account(
     return LinkAccountResponse(
         link_code=data["link_code"],
         expires_at=data["expires_at"],
-        url=f"{SETTINGS.FE_URL}/link/discord/?token={token}",
+        url=f"{SETTINGS.FE_URL}/link/discord/?token={data["link_code"]}",
     )
 
 
