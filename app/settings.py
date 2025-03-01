@@ -12,6 +12,7 @@ class Settings(BaseSettings):
 class LLMConfig:
     GENERIC_COMPLETION_MODEL = "google/gemini-2.0-flash-lite-001"
     INTENT_CLASSIFIER_MODEL = "openai/gpt-4o-mini"
+    RULE_CHAT_MODEL = "google/gemini-2.0-flash-001"
 
 
 SETTINGS = Settings()

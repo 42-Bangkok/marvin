@@ -6,6 +6,7 @@ from discord.ext import commands
 from discord.message import Message
 
 # from rich import inspect # debugger
+from handlers import rule_chat
 from services.account.links import handle_link_account
 from services.ai.oai.classifiers import classify_intent
 from services.ai.oai.completions import generic_completion
@@ -74,6 +75,9 @@ async def on_message(message: Message):
                 content=message.clean_content,
                 model=LLMConfig.GENERIC_COMPLETION_MODEL,
             )
+            await message.reply(resp)
+        case "ask-about-rules":
+            resp = await rule_chat.rule_chat(message.clean_content)
             await message.reply(resp)
         case _:
             await message.reply("I cannot do that yet.")
