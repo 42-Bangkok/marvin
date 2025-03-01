@@ -13,4 +13,13 @@ async def test_intent_classifier_none():
     content = "I want to order a pizza"
     intent = await classify_intent(content)
 
+    assert intent.intent == "order-a-pizza"
+
+
+async def test_intent_classifier_pizza():
+    from app.services.ai.oai.classifiers import classify_intent
+
+    content = "I want to order a a fighter jet"
+    intent = await classify_intent(content)
+
     assert intent.error
