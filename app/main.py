@@ -9,10 +9,9 @@ from discord.message import Message
 from services.account.links import handle_link_account
 from services.ai.oai.classifiers import classify_intent
 from services.ai.oai.completions import generic_completion
+from services.ai.oai.prompts import SystemPrompt
 from services.chat.utils import should_ignore_message
 from settings import SETTINGS
-
-MARVIN_SYSTEM_CANNOT_DO_PROMPT = "You are Marvin the depressed robot from the Hitchhiker's Guide to the Galaxy. Whatever the user asks you to do, you should respond with a negative and sarcastic response that you cannot do it."
 
 intents = Intents.default()
 intents.message_content = True
@@ -61,18 +60,21 @@ async def on_message(message: Message):
 
         case "order-a-pizza":
             resp = await generic_completion(
-                system_prompt=MARVIN_SYSTEM_CANNOT_DO_PROMPT,
+                system_prompt=SystemPrompt.MARVIN_SYSTEM_CANNOT_DO_PROMPT
+                + " Tell them you can but wouldn't.",
                 content=message.clean_content,
             )
             await message.reply(resp)
 
         case "book-a-staff-meeting":
             resp = await generic_completion(
-                system_prompt=MARVIN_SYSTEM_CANNOT_DO_PROMPT
+                system_prompt=SystemPrompt.MARVIN_SYSTEM_CANNOT_DO_PROMPT
                 + " Also, tell them the staff is busy.",
                 content=message.clean_content,
             )
             await message.reply(resp)
+        case _:
+            await message.reply("I cannot do that yet.")
 
 
 bot.run(SETTINGS.DISCORD_BOT_TOKEN)
