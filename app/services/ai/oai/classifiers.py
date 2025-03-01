@@ -2,6 +2,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel
 from services.ai.oai.client import client
+from settings import LLMConfig
 
 
 class Intent(BaseModel):
@@ -38,7 +39,7 @@ async def classify_intent(
     """
 
     completion = await client.beta.chat.completions.parse(
-        model=model,
+        model=LLMConfig.INTENT_CLASSIFIER_MODEL,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": content},

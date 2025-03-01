@@ -7,7 +7,7 @@ async def generic_completion(
     system_prompt: str,
     content: str,
     max_tokens: int = 512,
-    model: str = "gpt-4o-mini",
+    model: str = "google/gemini-2.0-flash-lite-001",
 ) -> str:
     """
     Classify the intent of the user's message.

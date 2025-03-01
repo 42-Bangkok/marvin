@@ -9,4 +9,9 @@ class Settings(BaseSettings):
     SERVICE_TOKEN: str
 
 
+class LLMConfig:
+    GENERIC_COMPLETION_MODEL = "google/gemini-2.0-flash-lite-001"
+    INTENT_CLASSIFIER_MODEL = "openai/gpt-4o-mini"
+
+
 SETTINGS = Settings()

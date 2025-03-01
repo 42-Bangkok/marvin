@@ -11,7 +11,7 @@ from services.ai.oai.classifiers import classify_intent
 from services.ai.oai.completions import generic_completion
 from services.ai.oai.prompts import SystemPrompt
 from services.chat.utils import should_ignore_message
-from settings import SETTINGS
+from settings import SETTINGS, LLMConfig
 
 intents = Intents.default()
 intents.message_content = True
@@ -63,6 +63,7 @@ async def on_message(message: Message):
                 system_prompt=SystemPrompt.MARVIN_SYSTEM_CANNOT_DO_PROMPT
                 + " Tell them you can but wouldn't.",
                 content=message.clean_content,
+                model=LLMConfig.GENERIC_COMPLETION_MODEL,
             )
             await message.reply(resp)
 
@@ -71,6 +72,7 @@ async def on_message(message: Message):
                 system_prompt=SystemPrompt.MARVIN_SYSTEM_CANNOT_DO_PROMPT
                 + " Also, tell them the staff is busy.",
                 content=message.clean_content,
+                model=LLMConfig.GENERIC_COMPLETION_MODEL,
             )
             await message.reply(resp)
         case _:
