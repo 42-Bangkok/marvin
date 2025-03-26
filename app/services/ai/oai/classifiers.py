@@ -20,13 +20,13 @@ class Intent(BaseModel):
 
 async def classify_intent(
     content: str,
-    model: str = "openai/gpt-4o-mini",
+    model: str | None = None,
 ) -> Intent:
     """
     Classify the intent of the user's message.
     Args:
         content (str): The message to classify.
-        model (str): The model to use for classification.
+        model (Optional[str]): The model to use for classification. If None, defaults to LLMConfig.INTENT_CLASSIFIER_MODEL.
     """
 
     SYSTEM_PROMPT = """
@@ -41,7 +41,7 @@ async def classify_intent(
     """
 
     completion = await client.beta.chat.completions.parse(
-        model=LLMConfig.INTENT_CLASSIFIER_MODEL,
+        model=model if model else LLMConfig.INTENT_CLASSIFIER_MODEL,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": content},
