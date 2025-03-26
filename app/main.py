@@ -89,15 +89,9 @@ async def on_message(message: Message):
             )
         case "ask-about-rules":
             resp = await rule_chat.rule_chat(message.clean_content)
-            await message.reply(
-                resp,
-                delete_after=DELETE_AFTER,
-            )
+            await message.reply(resp)
         case _:
-            await message.reply(
-                "I cannot do that yet.",
-                delete_after=DELETE_AFTER,
-            )
+            await message.reply("I cannot do that yet.")
 
     await message.delete(delay=DELETE_AFTER)
 
