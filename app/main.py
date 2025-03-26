@@ -31,16 +31,20 @@ async def on_ready():
 
 @bot.event
 async def on_message(message: Message):
+    DELETE_AFTER = SETTINGS.PUBLIC_CHANNEL_MESSAGE_DELETE_AFTER
     # inspect(message) # debugger
     if should_ignore_message(message, bot.user):
         return
 
     async with message.channel.typing():
         intent = await classify_intent(message.clean_content)
-
     if intent.error:
         logging.error(intent.error)
-        await message.reply("Sorry, I'm not allowed to do that.")
+        await message.reply(
+            "Sorry, I'm not allowed to do that.",
+            delete_after=DELETE_AFTER,
+        )
+        await message.delete(delay=DELETE_AFTER)
         return
 
     match intent.intent:
@@ -48,7 +52,8 @@ async def on_message(message: Message):
             link = await handle_link_account(str(message.author.id))
             tasks = [
                 message.reply(
-                    "I'm going to send you a DM with instructions on how to link your account."
+                    "I'm going to send you a DM with instructions on how to link your account.",
+                    delete_after=DELETE_AFTER,
                 ),
                 message.author.send(
                     f"""Go to this link: {link.url} to link your account.
@@ -66,7 +71,10 @@ async def on_message(message: Message):
                 content=message.clean_content,
                 model=LLMConfig.GENERIC_COMPLETION_MODEL,
             )
-            await message.reply(resp)
+            await message.reply(
+                resp,
+                delete_after=DELETE_AFTER,
+            )
 
         case "book-a-staff-meeting":
             resp = await generic_completion(
@@ -75,12 +83,23 @@ async def on_message(message: Message):
                 content=message.clean_content,
                 model=LLMConfig.GENERIC_COMPLETION_MODEL,
             )
-            await message.reply(resp)
+            await message.reply(
+                resp,
+                delete_after=DELETE_AFTER,
+            )
         case "ask-about-rules":
             resp = await rule_chat.rule_chat(message.clean_content)
-            await message.reply(resp)
+            await message.reply(
+                resp,
+                delete_after=DELETE_AFTER,
+            )
         case _:
-            await message.reply("I cannot do that yet.")
+            await message.reply(
+                "I cannot do that yet.",
+                delete_after=DELETE_AFTER,
+            )
+
+    await message.delete(delay=DELETE_AFTER)
 
 
 bot.run(SETTINGS.DISCORD_BOT_TOKEN)
