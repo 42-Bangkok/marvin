@@ -20,7 +20,6 @@ class Intent(BaseModel):
 
 async def classify_intent(
     content: str,
-    model: str = "openai/gpt-4o-mini",
 ) -> Intent:
     """
     Classify the intent of the user's message.
