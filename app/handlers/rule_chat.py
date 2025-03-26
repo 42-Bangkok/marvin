@@ -15,4 +15,8 @@ async def rule_chat(
         max_tokens=100_000,
         model=LLMConfig.RULE_CHAT_MODEL,
     )
-    return completion
+    return (
+        completion + "\n"
+        "For more information about the rules, and regulations of 42 Bangkok, please visit: "
+        + "https://github.com/42-Bangkok/marvin/blob/main/app/docs/ft_bkk_rules.md"
+    )
