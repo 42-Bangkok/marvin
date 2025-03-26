@@ -2,6 +2,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel
 from services.ai.oai.client import client
+from services.ai.oai.prompts import SystemPrompt
 from settings import LLMConfig
 
 
@@ -29,21 +30,10 @@ async def classify_intent(
         model (Optional[str]): The model to use for classification. If None, defaults to LLMConfig.INTENT_CLASSIFIER_MODEL.
     """
 
-    SYSTEM_PROMPT = """
-    Classify the intent of the user's message.
-    Avaliable intents:
-    - link-account: The user wants to sync their account with another service.
-    - unlink-account: The user wants to remove the sync between their account and another service.
-    - book-a-staff-meeting: The user wants to schedule a meeting with staff.
-    - order-a-pizza: The user wants to order a pizza.
-    - ask-about-rules: The user wants to ask about the rules, and regulations.
-    If the user's message does not match any of these intents, return an error message.
-    """
-
     completion = await client.beta.chat.completions.parse(
         model=model if model else LLMConfig.INTENT_CLASSIFIER_MODEL,
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": SystemPrompt.INTENT_CLASSIFIER},
             {"role": "user", "content": content},
         ],
         response_format=Intent,
