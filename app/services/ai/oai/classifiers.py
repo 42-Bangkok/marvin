@@ -26,7 +26,7 @@ async def classify_intent(
     Classify the intent of the user's message.
     Args:
         content (str): The message to classify.
-        model (str): The model to use for classification.
+        model (Optional[str]): The model to use for classification. If None, defaults to LLMConfig.INTENT_CLASSIFIER_MODEL.
     """
 
     SYSTEM_PROMPT = """
